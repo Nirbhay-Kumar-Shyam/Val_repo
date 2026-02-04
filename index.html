@@ -20,7 +20,7 @@
     .container {
         text-align: center;
         width: 100%;
-        max-width: 400px;
+        max-width: 420px;
         padding: 20px;
         position: relative;
     }
@@ -34,34 +34,39 @@
     .buttons {
         position: relative;
         width: 100%;
-        height: 180px;
-    }
-
-    button {
-        padding: 14px 32px;
-        font-size: clamp(16px, 4vw, 20px);
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        touch-action: manipulation;
+        height: 200px;
     }
 
     #yes {
         background-color: #ff3366;
         color: white;
+        padding: 14px 32px;
+        font-size: 18px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        z-index: 2;
     }
 
     #no {
         background-color: #666;
         color: white;
+        padding: 14px 32px;
+        font-size: 18px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
         position: absolute;
-        left: 55%;
-        top: 60%;
+        left: 50%;
+        top: 100px;
+        transform: translateX(-50%);
+        z-index: 1;
     }
 </style>
 </head>
 
 <body>
+
 <div class="container">
     <h1>Will you be my Valentine? 💕</h1>
 
@@ -80,6 +85,55 @@ function moveNoButton() {
     const btnRect = noBtn.getBoundingClientRect();
 
     const padding = 10;
-
     const maxX = areaRect.width - btnRect.width - padding;
     const maxY = areaRect.height - btnRect.height - padding;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+// Desktop
+noBtn.addEventListener("mouseenter", moveNoButton);
+
+// Mobile
+noBtn.addEventListener("touchstart", moveNoButton);
+
+function accepted() {
+    fetch("https://formspree.io/f/xwvqgrqb", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            answer: "YES",
+            time: new Date().toLocaleString()
+        })
+    }).catch(() => {});
+
+    document.body.innerHTML = `
+        <div style="
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            background:linear-gradient(135deg, #ff758c, #ff7eb3);
+            color:white;
+            font-family:Arial;
+            text-align:center;
+            padding:20px;
+        ">
+            <h1>Yayyyy! 😍💖</h1>
+            <h2>You just made me the happiest person 🥰</h2>
+            <p>Happy Valentine’s Day ❤️</p>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>

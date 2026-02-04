@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valentine Proposal ❤️</title>
+
     <style>
         body {
             height: 100vh;
@@ -12,59 +14,86 @@
             align-items: center;
             background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .container {
             text-align: center;
+            padding: 20px;
+            max-width: 90%;
         }
 
         h1 {
             color: #b30059;
             margin-bottom: 30px;
+            font-size: clamp(22px, 5vw, 32px);
+        }
+
+        .buttons {
+            position: relative;
+            height: 160px;
         }
 
         button {
-            padding: 12px 30px;
-            font-size: 18px;
+            padding: 14px 32px;
+            font-size: clamp(16px, 4vw, 20px);
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         #yes {
             background-color: #ff3366;
             color: white;
-            margin-right: 20px;
         }
 
         #no {
             background-color: #666;
             color: white;
             position: absolute;
+            left: 55%;
+            top: 60%;
+        }
+
+        /* Mobile specific spacing */
+        @media (max-width: 600px) {
+            .buttons {
+                height: 200px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Will you be my Valentine? 💕</h1>
-        <button id="yes" onclick="accepted()">YES 💖</button>
-        <button id="no">NO 😝</button>
+
+        <div class="buttons">
+            <button id="yes" onclick="accepted()">YES 💖</button>
+            <button id="no">NO 😝</button>
+        </div>
     </div>
 
-    <script>
+<script>
     const noBtn = document.getElementById("no");
 
-    noBtn.addEventListener("mouseover", () => {
+    function moveNoButton() {
         const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
         const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
-    });
+    }
+
+    // Desktop
+    noBtn.addEventListener("mouseover", moveNoButton);
+
+    // Mobile
+    noBtn.addEventListener("touchstart", moveNoButton);
 
     function accepted() {
 
-        // 🔴 POST REQUEST TO GET RESPONSE
+        // 🔴 POST REQUEST (works on mobile + laptop)
         fetch("https://formspree.io/f/xwvqgrqb", {
             method: "POST",
             headers: {
@@ -74,11 +103,11 @@
             body: JSON.stringify({
                 answer: "YES",
                 time: new Date().toLocaleString(),
-                page: "Valentine Proposal"
+                device: /Mobi/i.test(navigator.userAgent) ? "Mobile" : "Desktop"
             })
         }).catch(err => console.error(err));
 
-        // UI after YES
+        // Success screen
         document.body.innerHTML = `
             <div style="
                 height:100vh;
@@ -90,6 +119,7 @@
                 color:white;
                 font-family:Arial;
                 text-align:center;
+                padding:20px;
             ">
                 <h1>Yayyyy! 😍💖</h1>
                 <h2>You just made me the happiest person 🥰</h2>
@@ -98,7 +128,5 @@
         `;
     }
 </script>
-
 </body>
 </html>
-
